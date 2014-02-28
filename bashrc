@@ -17,6 +17,9 @@ alias sb='source ~/.bashrc'
 alias vb='vi ~/.bashrc'
 alias vbp='vi ~/.bash_profile'
 
+alias sub='subl ~/.bashrc'
+alias subp='subl ~/.bash_profile'
+
 alias pull_analytics_repos='cd ~/repos/delphi-reporter; git pull; cd ~/repos/pingd; git pull; cd ~/repos/minerva; git pull; cd ~/repos/rookery; git pull; cd ~/repos/analytics-aggregates; git pull'
 
 alias g='git'
@@ -43,6 +46,11 @@ complete -C 'jirash --bash-completion' jirash
 alias kp='kill -9'
 
 alias load-provider=~/repos/database-migrations/tools/load-provider.rb
+
+alias ls="ls -G"
+alias ll="ls -la"
+
+# alias ssh=~/bin/ssh-host-color
 
 ###################
 # FUNCTIONS
@@ -89,6 +97,26 @@ function b64() {
   echo ""
 }
 
+function cdh5
+{
+local CLEAN_PATH=`/usr/bin/ruby -e 'print ENV["PATH"].split(":").reject{|p| p=~/(hadoop|hive|sqoop)_distros/ }.join(":")'`
+
+export HADOOP_HOME=$OOYALA_REPO_ROOT/vendor/hadoop_distros/current-cdh5
+export HIVE_HOME=$OOYALA_REPO_ROOT/vendor/hive_distros/current-cdh5
+export SQOOP_HOME=$OOYALA_REPO_ROOT/vendor/sqoop_distros/current-cdh5
+export PATH=$HADOOP_HOME/bin:$HIVE_HOME/bin:$SQOOP_HOME/bin:$CLEAN_PATH
+}
+
+function cdh3
+{
+local CLEAN_PATH=`/usr/bin/ruby -e 'print ENV["PATH"].split(":").reject{|p| p=~/(hadoop|hive|sqoop)_distros/ }.join(":")'`
+
+export HADOOP_HOME=$OOYALA_REPO_ROOT/vendor/hadoop_distros/current
+export HIVE_HOME=$OOYALA_REPO_ROOT/vendor/hive_distros/current
+export SQOOP_HOME=$OOYALA_REPO_ROOT/vendor/sqoop_distros/current
+export PATH=$HADOOP_HOME/bin:$HIVE_HOME/bin:$SQOOP_HOME/bin:$CLEAN_PATH
+}
+
 
 ###################
 # EXPORTS
@@ -120,14 +148,14 @@ export PATH=~/bin:$PATH
 export PATH=~/play-2.1.2:$PATH
 export PATH=~/spark-0.7.0/bin:$PATH
 
-export CASSANDRA_HOME=$OOYALA_REPO_ROOT/vendor/cassandra_distros/current_odin
+export CASSANDRA_HOME=$OOYALA_REPO_ROOT/vendor/cassandra_distros/current
 
 export REDIS_HOME=$OOYALA_REPO_ROOT/redis-2.6.14/src
 
 export MYSQL_UNIX_PORT=`mysql_config --socket`
 
-export HADOOP_HOME=$OOYALA_CODE_ROOT/vendor/hadoop_distros/current
-export PATH="$PATH:$HADOOP_HOME/bin"
+export HADOOP_HOME=$OOYALA_CODE_ROOT/vendor/hadoop_distros/current-cdh5
+export PATH="$HADOOP_HOME/bin:$PATH"
 
 export PATH="$PATH:$HOME/repos/jenkins-cli/bin"
 
@@ -141,3 +169,35 @@ eval "$(rbenv init -)"
 SBT_OPTS=-XX:MaxPermSize=512m
 
 HISTFILESIZE=5000
+
+if [ -f $HOME/.git-prompt.sh ]; then
+ source $HOME/.git-prompt.sh
+fi
+
+# Add current git branch, date/time, and pretty colors to the command prompt
+function prompt_command
+{
+local WHITE="\[\033[1;37m\]"
+local GREEN="\[\033[0;32m\]"
+local CYAN="\[\033[0;36m\]"
+local GRAY="\[\033[0;37m\]"
+local BLUE="\[\033[0;34m\]"
+local BLACK="\[\033[0;30m\]"
+local PURPLE="\[\033[0;35m\]"
+local RED="\[\033[0;31m\]"
+local JAVA_VERSION=`echo $JAVA_HOME | grep -o "[0-9.]*[0-9]"`
+local HADOOP_VERSION=`readlink $HADOOP_HOME | cut -d '-' -f 3-`
+# Shows a "*" next to the branch name if you have un-staged local changes
+# Shows a "+" next to the branch name if you have staged local changes
+# export GIT_PS1_SHOWDIRTYSTATE=1
+# Shows a "$" next to the branch name if you have stashed changes
+# export GIT_PS1_SHOWSTASHSTATE=1
+# Shows a "%" next to the branch name if you have untracked files
+# export GIT_PS1_SHOWUNTRACKEDFILES=1
+# Put it all together
+export PS1="${PURPLE}[\d \t] ${RED}`rbenv version-name`${BLACK} - ${BLUE}${JAVA_VERSION} ${GREEN}${HADOOP_VERSION} ${BLACK}\u ${RED}\w${PURPLE}"'$(__git_ps1 "(%s)")'"\n${GREEN}\$${BLACK} "
+}
+export PROMPT_COMMAND=prompt_command
+
+# Makes cd and pushd resolve symlinks to real paths
+set -P
