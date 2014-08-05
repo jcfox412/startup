@@ -18,6 +18,25 @@ fi
 # ALIASES
 ###################
 
+### rc file aliases ###
+
+alias vb='vi ~/.bashrc'
+alias vbp='vi ~/.bash_profile'
+
+alias sb='source ~/.bashrc'
+alias sz='source ~/.zshrc'
+
+alias sub='subl ~/.bashrc'
+alias subp='subl ~/.bash_profile'
+alias subz='subl ~/.zshrc'
+alias subc='subl ~/.shrc_common'
+
+alias ab='atom ~/.bashrc'
+alias ap='atom ~/.bash_profile'
+alias az='atom ~/.zshrc'
+alias ac='atom ~/.shrc_common'
+
+
 alias ..='cd ..'
 alias l='ls'
 
@@ -26,16 +45,6 @@ alias rd='cd ~/repos/delphi-reporter'
 alias ofe='cd ~/repos/ooyala/ofe/ooyala-web-rails'
 
 alias sublime='open /Applications/Sublime\ Text\ 2.app/'
-
-alias sb='source ~/.bashrc'
-alias vb='vi ~/.bashrc'
-alias vbp='vi ~/.bash_profile'
-
-alias sub='subl ~/.bashrc'
-alias subp='subl ~/.bash_profile'
-
-alias subz='subl ~/.zshrc'
-alias sz='source ~/.zshrc'
 
 alias pull_analytics_repos='cd ~/repos/delphi-reporter; git pull; cd ~/repos/pingd; git pull; cd ~/repos/minerva; git pull; cd ~/repos/rookery; git pull; cd ~/repos/analytics-aggregates; git pull'
 
@@ -69,20 +78,25 @@ alias ll="ls -la"
 
 # alias ssh=~/bin/ssh-host-color
 
+alias rand="jot -r 1 $1 $2"
+
+alias hdfs="hadoop fs"
+
 ###################
 # FUNCTIONS
 ###################
 
-gclone() {
-   if [ ! "$1" == "-local"  ]; then
-      cd $HOME/repos
-      git clone "ssh://git@git.corp.ooyala.com/$1"
-   else
-      git clone "ssh://git@git.corp.ooyala.com/$2"
-   fi   
+function gclone() {
+  cd $HOME/repos
+  git clone "ssh://git@git.corp.ooyala.com/$1"
 }
 
-gremote() {
+function geclone() {
+  cd $HOME/repos
+  git clone "ssh://git@$1"
+}
+
+function gremote() {
    git checkout --track -b $1 origin/$1
 }
 
@@ -128,10 +142,40 @@ function cdh3
 {
 local CLEAN_PATH=`/usr/bin/ruby -e 'print ENV["PATH"].split(":").reject{|p| p=~/(hadoop|hive|sqoop)_distros/ }.join(":")'`
 
-export HADOOP_HOME=$OOYALA_REPO_ROOT/vendor/hadoop_distros/current
-export HIVE_HOME=$OOYALA_REPO_ROOT/vendor/hive_distros/current
-export SQOOP_HOME=$OOYALA_REPO_ROOT/vendor/sqoop_distros/current
+export HADOOP_HOME=$OOYALA_REPO_ROOT/vendor/hadoop_distros/current-cdh3
+export HIVE_HOME=$OOYALA_REPO_ROOT/vendor/hive_distros/current-cdh3
+export SQOOP_HOME=$OOYALA_REPO_ROOT/vendor/sqoop_distros/current-cdh3
 export PATH=$HADOOP_HOME/bin:$HIVE_HOME/bin:$SQOOP_HOME/bin:$CLEAN_PATH
+}
+
+function hadoop_delphi_staging
+{
+unset HADOOP_CONF_DIR
+export HADOOP_CONF_DIR=$OOYALA_REPO_ROOT/vendor/hadoop_distros/current/conf-cdh5-staging
+}
+
+function hadoop_delphi_next_staging
+{
+unset HADOOP_CONF_DIR
+export HADOOP_CONF_DIR=$OOYALA_REPO_ROOT/vendor/hadoop_distros/current/conf-cdh5-next-staging
+}
+
+function hadoop_v2
+{
+unset HADOOP_CONF_DIR
+}
+
+# decrypt b64 strings, for example URLS passed to html5
+# usage: b64 aHR0cDovL3BsYXllci5vb3lhbGEuY29tL3BsYXllci9pcGhvbmUvSnBOekJ6TnpyNGNIY0pCWUZKSHY3RGVIQ25xRDdEY0gubTN1OA==
+function b64() {
+  echo $1 | base64 -D
+  echo ""
+}
+
+function java_home
+{
+  unset $JAVA_HOME
+  export JAVA_HOME=`/usr/libexec/java_home -v $1`
 }
 
 
@@ -169,6 +213,8 @@ export CASSANDRA_HOME=$OOYALA_REPO_ROOT/vendor/cassandra_distros/current
 
 export REDIS_HOME=$OOYALA_REPO_ROOT/redis-2.6.14/src
 
+export OCTAVE_HOME=/usr/local/octave/3.8.0/
+
 export MYSQL_UNIX_PORT=`mysql_config --socket`
 
 export HADOOP_HOME=$OOYALA_CODE_ROOT/vendor/hadoop_distros/current-cdh5
@@ -176,12 +222,18 @@ export PATH="$HADOOP_HOME/bin:$PATH"
 
 export PATH="$PATH:$HOME/repos/jenkins-cli/bin"
 
+export PATH="$PATH:/usr/local/octave/3.8.0/bin"
+
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
 
 ###################
 # RANDOM
 ###################
 
 eval "$(rbenv init -)"
+
+eval "cdh5"
 
 SBT_OPTS=-XX:MaxPermSize=512m
 
