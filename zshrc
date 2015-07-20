@@ -16,6 +16,6 @@ local GIT_BRANCH="$(__git_ps1 "(%s)")"
 # # Shows a "%" next to the branch name if you have untracked files
 # export GIT_PS1_SHOWUNTRACKEDFILES=1
 # # Put it all together
-PS1="%{%F{magenta}%}[%D{%a %b %y} %*] %{%F{red}%}`rbenv version-name` %{%f%}- %{%F{blue}%}$JAVA_VERSION %{%F{green}%}$HADOOP_VERSION %{%f%}%n %{%F{red}%}%d %{%F{magenta}%}$GIT_BRANCH
+PS1="%{%F{magenta}%}[%D{%a %b %y} %*] %{%f%}- %{%F{blue}%}$JAVA_VERSION %{%F{green}%}$HADOOP_VERSION %{%f%}%n %{%F{red}%}%d %{%F{magenta}%}$GIT_BRANCH
 %{%F{green}%}$ %{%f%}"
 }

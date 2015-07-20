@@ -25,6 +25,6 @@ local HADOOP_VERSION=`readlink $HADOOP_HOME | cut -d '-' -f 3-`
 # Shows a "%" next to the branch name if you have untracked files
 # export GIT_PS1_SHOWUNTRACKEDFILES=1
 # Put it all together
-export PS1="${PURPLE}[\d \t] ${RED}`rbenv version-name`${BLACK} - ${BLUE}${JAVA_VERSION} ${GREEN}${HADOOP_VERSION} ${BLACK}\u ${RED}\w${PURPLE}"'$(__git_ps1 "(%s)")'"\n${GREEN}\$${BLACK} "
+export PS1="${PURPLE}[\d \t] ${BLUE}${JAVA_VERSION} ${GREEN}${HADOOP_VERSION} ${BLACK}\u ${RED}\w${PURPLE}"'$(__git_ps1 "(%s)")'"\n${GREEN}\$${BLACK} "
 }
 export PROMPT_COMMAND=prompt_command

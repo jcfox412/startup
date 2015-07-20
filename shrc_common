@@ -195,7 +195,8 @@ export PATH=$PATH:/usr/local/mysql/bin/:/usr/local/mysql/support-files
 export JAVA_HOME=`/usr/libexec/java_home`
 export ANT_OPTS="-Xmx960m -XX:MaxPermSize=784m"
 
-export PATH=$HOME/.rbenv/bin:$PATH
+# ruby is not installed on this machine
+# export PATH=$HOME/.rbenv/bin:$PATH
 
 export GOPATH=$HOME/go
 export PATH=$PATH:~/go/bin
@@ -231,7 +232,8 @@ export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 # RANDOM
 ###################
 
-eval "$(rbenv init -)"
+# ruby is not installed on this machine
+# eval "$(rbenv init -)"
 
 eval "cdh5"
 
